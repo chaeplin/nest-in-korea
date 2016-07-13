@@ -33,7 +33,7 @@ d = json.loads(httpResponse.read())
 if 'access_token' in d:
 	print ("\r\n ---> access token is : %s") % d['access_token']
 else:
-	print ("error!!\r\n");
+	print ("error!!\r\n")
 	sys.exit("Can't get access_token")
 
 # get device id
@@ -66,5 +66,10 @@ if device_id_match:
 	print ("\r\n");
 else:
         sys.exit("Can't get deviceid")
+
+print "--------------------------------------------------------------")
+result = json.loads(result_firebase)
+print json.dumps(result, sort_keys=True, indent=4, separators=(',', ': '))
+
 
 # end
