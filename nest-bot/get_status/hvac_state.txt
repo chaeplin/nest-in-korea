@@ -1,0 +1,79 @@
+hvac_state
+Indicates whether HVAC system is actively heating, cooling or is off. Use this value to indicate HVAC activity state.
+
+type	string enum
+values	"heating", "cooling", "off"
+permissions / permissions version	You can read this data value when these permissions are selected:
+• Thermostat read / v3-v5
+• Thermostat read/write / v3-v5
+considerations	When "off", the HVAC system is not actively heating or cooling.
+hvac_state is independent of fan operation.
+
+humidity
+Humidity, in percent (%) format, measured at the device, rounded to the nearest 5%.
+
+type	number
+example	35, 40
+permissions / permissions version	You can read this data value when these permissions are selected:
+• Thermostat read / v2-v5
+• Thermostat read/write / v2-v5
+considerations	Humidity is limited to a range of 0-100.
+
+
+ambient_temperature_c
+Temperature, measured at the device, in half degrees Celsius (0.5°C).
+
+type	number
+example	21.5
+permissions / permissions version	You can read this data value when these permissions are selected:
+• Thermostat read / v1-v5
+• Thermostat read/write / v1-v5
+
+
+hvac_mode
+Indicates HVAC system heating/cooling modes. For systems with both heating and cooling capability, set this value to "heat-cool" (Heat • Cool mode) to get the best experience.
+Learn more about Heat • Cool mode >
+
+type	string enum
+values	"heat", "cool", "heat-cool", "off"
+example	"heat-cool"
+permissions / permissions version	You can read this data value when these permissions are selected:
+• Thermostat read / v1-v5
+• Thermostat read/write / v1-v5
+You can write this data value when this permission is selected:
+• Thermostat read/write / v1-v5
+considerations	When hvac_mode="off", then target_temperature_f and target_temperature_c cannot be changed.
+
+
+target_temperature_c
+Desired temperature, in half degrees Celsius (0.5°C). Used when hvac_mode = "heat" or "cool".
+
+type	number
+example	21.5
+permissions / permissions version	You can read this data value when these permissions are selected:
+• Thermostat read / v1-v5
+• Thermostat read/write / v1-v5
+You can write this data value when this permission is selected:
+• Thermostat read/write / v1-v5
+considerations	Target temperature is limited to a range of 9 - 32°C.
+
+
+has_leaf
+Displayed when the thermostat is set to an energy-saving temperature.
+
+type	boolean
+example	false
+permissions / permissions version	You can read this data value when these permissions are selected:
+• Thermostat read / v1-v5
+• Thermostat read/write / v1-v5
+
+
+is_online
+Device connection status with the Nest service.
+
+type	boolean
+example	true
+permissions / permissions version	You can read this data value when these permissions are selected:
+• Thermostat read / v1-v5
+• Thermostat read/write / v1-v5
+

@@ -1,0 +1,49 @@
+------------------------------
+connecting to developer-api.nest.com
+certificate matches
+request sent
+Found re-direction URL!
+connecting to firebase-apiserver10-tah01-iad01.dapi.production.nest.com
+certificate matches
+request sent
+------------------------------
+humidity: 55
+hvac_mode: cool
+target_temperature_c: 30.0
+ambient_temperature_c: 27.5
+is_online: true
+hvac_state: off
+------------------------------
+connecting to developer-api.nest.com
+certificate matches
+request sent
+Found re-direction URL!
+connecting to firebase-apiserver10-tah01-iad01.dapi.production.nest.com
+certificate matches
+request sent
+------------------------------
+humidity: 55
+hvac_mode: cool
+target_temperature_c: 24.0
+ambient_temperature_c: 27.5
+is_online: true
+hvac_state: cooling
+------------------------------
+connecting to developer-api.nest.com
+certificate matches
+request sent
+connecting to developer-api.nest.com
+certificate matches
+request sent
+Found re-direction URL!
+connecting to firebase-apiserver10-tah01-iad01.dapi.production.nest.com
+certificate matches
+request sent
+------------------------------
+humidity: 55
+hvac_mode: cool
+target_temperature_c: 27.0
+ambient_temperature_c: 27.5
+is_online: true
+hvac_state: off
+------------------------------
