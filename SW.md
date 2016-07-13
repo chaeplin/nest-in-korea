@@ -54,9 +54,8 @@ acl_file /etc/mosquitto/conf.d/jp.acl
 persistence_file mosquitto.db
 persistent_client_expiration 1m
 retained_persistence true
-listener 1883
 listener 8883
-tls_version tlsv1.1
+tls_version tlsv1
 cafile /etc/mosquitto/certs/ca.crt
 certfile /etc/mosquitto/certs/server.crt
 keyfile /etc/mosquitto/certs/server.key
