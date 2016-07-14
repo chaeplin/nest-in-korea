@@ -5,7 +5,7 @@
 
 from firebase_streaming import Firebase
 import json
-import paho.mqtt.client as mqtt
+import paho.mqtt.publish as mqtt
 import socket
 import ssl
 
@@ -14,7 +14,7 @@ access_token = "xxxxx"
 child_path   = "devices/thermostats?auth=" + access_token
 
 # add server CN to host file
-mqtt_cn   = "mqttserver"
+mqtt_cn   = "xxxxx"
 mqtt_user = "xxxxx"
 mqtt_pass = "xxxxx"
 
