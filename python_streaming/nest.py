@@ -13,6 +13,8 @@ device_id    = "xxxxx"
 access_token = "xxxxx"
 child_path   = "devices/thermostats?auth=" + access_token
 
+# add server CN to host file
+mqtt_cn   = "mqttserver"
 mqtt_user = "xxxxx"
 mqtt_pass = "xxxxx"
 
@@ -20,7 +22,12 @@ topic_ac_set = "cool/LIVING_ROOM/set"
 topic_ac_cmd = "cool/LIVING_ROOM/cmd"
 first        = True
 
-# Sample callback function
+def publish(y):
+    print y
+    auth_user = {'username':mqtt_user, 'password':mqtt_pass}
+    tls_user  = {'ca_certs':"ca.crt", 'tls_version':ssl.PROTOCOL_TLSv1}
+    mqtt.multiple(y, hostname=mqtt_cn, port=8883, client_id="nestrpi2", auth=auth_user, tls=tls_user)
+
 def p(x):
 
     global first
@@ -43,25 +50,17 @@ def p(x):
     
     if is_online == True:
         if first:
-
-            mqttc = mqtt.Client("nest")
-            mqttc.tls_set("ca.crt")
-            mqttc.tls_insecure_set(True)
-            mqttc.username_pw_set(mqtt_user, mqtt_pass)
-            mqttc.connect("127.0.0.1", port=8883, keepalive=3)
-
             msg_str_set = "{\"ac_temp\":" + str(int(target_temperature_c)) + ",\"ac_flow\":0}"
-            mqttc.publish(topic_ac_set, msg_str_set, 0, 1)
-            mqttc.loop()
 
             if hvac_state == "off":
                 msg_str_cmd = "{\"ac_cmd\":0}"
             elif hvac_state == "cooling":
                 msg_str_cmd = "{\"ac_cmd\":1}"
 
-            mqttc.publish(topic_ac_cmd, msg_str_cmd, 0, 0)
-            mqttc.loop()
-            mqttc.disconnect()
+            msgs = [(topic_ac_set, msg_str_set, 0, 1),
+                    (topic_ac_cmd, msg_str_cmd, 0, 0)]
+
+            publish(msgs)
 
             is_online_prev              = is_online
             hvac_state_prev             = hvac_state
@@ -72,35 +71,18 @@ def p(x):
             print (msg_str_cmd)
 
         else:
-            if target_temperature_c_prev != target_temperature_c:
-                mqttc = mqtt.Client("nest")
-                mqttc.tls_set("ca.crt")
-                mqttc.tls_insecure_set(True)
-                mqttc.username_pw_set(mqtt_user, mqtt_pass)
-                mqttc.connect("127.0.0.1", port=8883, keepalive=1)
-
+            if target_temperature_c_prev != target_temperature_c or hvac_state_prev != hvac_state:
                 msg_str_set = "{\"ac_temp\":" + str(int(target_temperature_c)) + ",\"ac_flow\":0}"
-                mqttc.publish(topic_ac_set, msg_str_set, 0, 1)
-                mqttc.loop()
-                mqttc.disconnect()
-
-                print (msg_str_set)
-
-            if hvac_state_prev != hvac_state:
-                mqttc = mqtt.Client("nest")
-                mqttc.tls_set("ca.crt")
-                mqttc.tls_insecure_set(True) 
-                mqttc.username_pw_set(mqtt_user, mqtt_pass)
-                mqttc.connect("127.0.0.1", port=8883, keepalive=1)
-
-                if (hvac_state == "off"):
+                
+        if (hvac_state == "off"):
                     msg_str_cmd = "{\"ac_cmd\":0}"
                 elif (hvac_state == "cooling"):
                     msg_str_cmd = "{\"ac_cmd\":1}"
 
-                mqttc.publish(topic_ac_cmd, msg_str_cmd, 0, 0)
-                mqttc.loop()
-                mqttc.disconnect()
+                msgs = [(topic_ac_set, msg_str_set, 0, 1),
+                    (topic_ac_cmd, msg_str_cmd, 0, 0)]
+
+                publish(msgs)
 
                 print (msg_str_cmd)
 
