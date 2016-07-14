@@ -7,7 +7,7 @@
 #include <TimeLib.h>
 
 #define IR_TX_PIN 4
-#define AC_CONF_TYPE 1		// 0: tower, 1: wall
+#define AC_CONF_TYPE 1    // 0: tower, 1: wall
 #define AC_CONF_HEATING 0   // 0: cooling, 1: heating
 #define AC_DEFAULT_TEMP 27  // temp 18 ~ 30
 #define AC_DEFAULT_FLOW 1   // fan speed 0: low, 1: mid, 2: high
@@ -15,14 +15,14 @@
 #include "/usr/local/src/rpi2_setting.h"
 
 /*
-#define WIFI_SSID "xxxxxxx"
-#define WIFI_PASSWORD "xxxxxxx"
+  #define WIFI_SSID "xxxxxxx"
+  #define WIFI_PASSWORD "xxxxxxx"
 
-#define MQTT_FINGERPRINT "xx xx xx xx xx xx"
-#define MQTT_SERVER_CN "xxxxxxx"
-#define MQTT_SERVER { 192, 168, 10, 10 }
-#define MQTT_USER "xxxxx"
-#define MQTT_PASS "xxxxxxxx"
+  #define MQTT_FINGERPRINT "xx xx xx xx xx xx"
+  #define MQTT_SERVER_CN "xxxxxxx"
+  #define MQTT_SERVER { 192, 168, 10, 10 }
+  #define MQTT_USER "xxxxx"
+  #define MQTT_PASS "xxxxxxxx"
 */
 
 char* subscribe_topic = "cool/LIVING_ROOM/#";
@@ -88,7 +88,7 @@ bool ICACHE_RAM_ATTR sendmqttMsg(char* topictosend, String payloadtosend, bool r
   }
 }
 
-void sendCheck()
+void ICACHE_RAM_ATTR sendCheck()
 {
   DynamicJsonBuffer jsonBuffer;
   JsonObject& root = jsonBuffer.createObject();
@@ -101,25 +101,7 @@ void sendCheck()
   sendmqttMsg(reporting_topic, json, true);
 }
 
-void ICACHE_RAM_ATTR callback(char* intopic, byte* inpayload, unsigned int length)
-{
-  String receivedtopic = intopic;
-  String receivedpayload ;
-
-  for (unsigned int i = 0; i < length; i++)
-  {
-    receivedpayload += (char)inpayload[i];
-  }
-
-  Serial.print("[MQTT] intopic : ");
-  Serial.print(receivedtopic);
-  Serial.print(" payload: ");
-  Serial.println(receivedpayload);
-
-  parseMqttMsg(receivedpayload, receivedtopic);
-}
-
-void parseMqttMsg(String receivedpayload, String receivedtopic)
+void ICACHE_RAM_ATTR parseMqttMsg(String receivedpayload, String receivedtopic)
 {
   char json[] = "{\"ac_mode\":0,\"ac_temp\":27,\"ac_flow\":1}";
 
@@ -134,9 +116,9 @@ void parseMqttMsg(String receivedpayload, String receivedtopic)
 
   if (receivedtopic == subscribe_cmd)
   {
-    if (root.containsKey("ac_mode"))
+    if (root.containsKey("ac_cmd"))
     {
-      ir_data.ac_mode = root["ac_mode"];
+      ir_data.ac_mode = root["ac_cmd"];
       ir_data.haveData = true;
     }
   }
@@ -162,6 +144,24 @@ void parseMqttMsg(String receivedpayload, String receivedtopic)
       sendCheck();
     }
   }
+}
+
+void ICACHE_RAM_ATTR callback(char* intopic, byte* inpayload, unsigned int length)
+{
+  String receivedtopic = intopic;
+  String receivedpayload ;
+
+  for (unsigned int i = 0; i < length; i++)
+  {
+    receivedpayload += (char)inpayload[i];
+  }
+
+  Serial.print("[MQTT] intopic : ");
+  Serial.print(receivedtopic);
+  Serial.print(" payload: ");
+  Serial.println(receivedpayload);
+
+  parseMqttMsg(receivedpayload, receivedtopic);
 }
 
 bool verifytls()
@@ -333,14 +333,12 @@ void loop()
           case 0:
             Serial.println("[IR] -----> AC Power Down");
             lgWhisen.power_down();
-            delay(5);
             break;
 
           // ac on
           case 1:
             Serial.println("[IR] -----> AC Power On");
             lgWhisen.activate();
-            delay(5);
             break;
 
           default:

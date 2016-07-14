@@ -57,8 +57,8 @@ def p(x):
             elif hvac_state == "cooling":
                 msg_str_cmd = "{\"ac_cmd\":1}"
 
-            msgs = [(topic_ac_set, msg_str_set, 0, 1),
-                    (topic_ac_cmd, msg_str_cmd, 0, 0)]
+            msgs = [(topic_ac_cmd, msg_str_cmd, 0, 0),
+                    (topic_ac_set, msg_str_set, 0, 1)]
 
             publish(msgs)
 
@@ -76,8 +76,8 @@ def p(x):
                 elif (hvac_state == "cooling"):
                     msg_str_cmd = "{\"ac_cmd\":1}"
 
-                msgs = [(topic_ac_set, msg_str_set, 0, 1),
-                    (topic_ac_cmd, msg_str_cmd, 0, 0)]
+                msgs = [(topic_ac_cmd, msg_str_cmd, 0, 0),
+                        (topic_ac_set, msg_str_set, 0, 1)]
 
                 publish(msgs)
 
