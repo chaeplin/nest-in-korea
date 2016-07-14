@@ -19,7 +19,7 @@
 #define WIFI_PASSWORD "xxxxxxx"
 
 #define MQTT_FINGERPRINT "xx xx xx xx xx xx"
-#define MQT_SERVER_CN "xxxxxxx"
+#define MQTT_SERVER_CN "xxxxxxx"
 #define MQTT_SERVER { 192, 168, 10, 10 }
 #define MQTT_USER "xxxxx"
 #define MQTT_PASS "xxxxxxxx"
@@ -174,7 +174,7 @@ bool verifytls()
     return false;
   }
 
-  if (sslclient.verify(MQTT_FINGERPRINT, MQT_SERVER_CN))
+  if (sslclient.verify(MQTT_FINGERPRINT, MQTT_SERVER_CN))
   {
     Serial.println("[MQTT] tls certificate matches");
     sslclient.stop();
