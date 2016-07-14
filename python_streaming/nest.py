@@ -67,14 +67,11 @@ def p(x):
             target_temperature_c_prev   = target_temperature_c
             first                       = False
 
-            print (msg_str_set)
-            print (msg_str_cmd)
-
         else:
             if target_temperature_c_prev != target_temperature_c or hvac_state_prev != hvac_state:
                 msg_str_set = "{\"ac_temp\":" + str(int(target_temperature_c)) + ",\"ac_flow\":0}"
                 
-        if (hvac_state == "off"):
+                if (hvac_state == "off"):
                     msg_str_cmd = "{\"ac_cmd\":0}"
                 elif (hvac_state == "cooling"):
                     msg_str_cmd = "{\"ac_cmd\":1}"
@@ -83,8 +80,6 @@ def p(x):
                     (topic_ac_cmd, msg_str_cmd, 0, 0)]
 
                 publish(msgs)
-
-                print (msg_str_cmd)
 
             is_online_prev              = is_online
             hvac_state_prev             = hvac_state
