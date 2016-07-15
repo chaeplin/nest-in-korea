@@ -19,14 +19,13 @@ mqtt_user = "xxxxx"
 mqtt_pass = "xxxxx"
 
 topic_ac_set = "cool/LIVING_ROOM/set"
-topic_ac_cmd = "cool/LIVING_ROOM/cmd"
 first        = True
 
 def publish(y):
     print y
     auth_user = {'username':mqtt_user, 'password':mqtt_pass}
     tls_user  = {'ca_certs':"ca.crt", 'tls_version':ssl.PROTOCOL_TLSv1}
-    mqtt.multiple(y, hostname=mqtt_cn, port=8883, client_id="nestrpi2", auth=auth_user, tls=tls_user)
+    mqtt.single(topic_ac_set, y, 0, 1, hostname=mqtt_cn, port=8883, client_id="nestrpi2", auth=auth_user, tls=tls_user)
 
 def p(x):
 
@@ -50,17 +49,14 @@ def p(x):
     
     if is_online == True:
         if first:
-            msg_str_set = "{\"ac_temp\":" + str(int(target_temperature_c)) + ",\"ac_flow\":0}"
-
             if hvac_state == "off":
-                msg_str_cmd = "{\"ac_cmd\":0}"
+                msg_str_set = "{\"ac_cmd\":0,"
             elif hvac_state == "cooling":
-                msg_str_cmd = "{\"ac_cmd\":1}"
+                msg_str_set = "{\"ac_cmd\":1,"
 
-            msgs = [(topic_ac_cmd, msg_str_cmd, 0, 0),
-                    (topic_ac_set, msg_str_set, 0, 1)]
+            msg_str_set = msg_str_set + "\"ac_temp\":" + str(int(target_temperature_c)) + ",\"ac_flow\":0}"
 
-            publish(msgs)
+            publish(msg_str_set)
 
             is_online_prev              = is_online
             hvac_state_prev             = hvac_state
@@ -69,17 +65,14 @@ def p(x):
 
         else:
             if target_temperature_c_prev != target_temperature_c or hvac_state_prev != hvac_state:
-                msg_str_set = "{\"ac_temp\":" + str(int(target_temperature_c)) + ",\"ac_flow\":0}"
-                
-                if (hvac_state == "off"):
-                    msg_str_cmd = "{\"ac_cmd\":0}"
-                elif (hvac_state == "cooling"):
-                    msg_str_cmd = "{\"ac_cmd\":1}"
+                if hvac_state == "off":
+                    msg_str_set = "{\"ac_cmd\":0,"
+                elif hvac_state == "cooling":
+                    msg_str_set = "{\"ac_cmd\":1,"
 
-                msgs = [(topic_ac_cmd, msg_str_cmd, 0, 0),
-                        (topic_ac_set, msg_str_set, 0, 1)]
+                msg_str_set = msg_str_set + "\"ac_temp\":" + str(int(target_temperature_c)) + ",\"ac_flow\":0}"
 
-                publish(msgs)
+                publish(msg_str_set)
 
             is_online_prev              = is_online
             hvac_state_prev             = hvac_state

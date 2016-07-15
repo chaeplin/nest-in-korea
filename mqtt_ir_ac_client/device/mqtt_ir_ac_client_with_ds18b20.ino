@@ -30,9 +30,7 @@
   #define MQTT_PASS "xxxxxxxx"
 */
 
-char* subscribe_topic = "cool/LIVING_ROOM/#";
-char* subscribe_set   = "cool/LIVING_ROOM/set";
-char* subscribe_cmd   = "cool/LIVING_ROOM/cmd";
+char* subscribe_topic = "cool/LIVING_ROOM/set";
 char* reporting_topic = "status/cool/LIVING_ROOM";
 
 volatile struct
@@ -40,6 +38,9 @@ volatile struct
   uint8_t ac_mode;
   uint8_t ac_temp;
   uint8_t ac_flow;
+  uint8_t prev_mode;
+  uint8_t prev_temp;
+  uint8_t prev_flow;  
   float tempCinside;
   bool haveData;
 } ir_data;
@@ -131,17 +132,13 @@ void ICACHE_RAM_ATTR parseMqttMsg(String receivedpayload, String receivedtopic)
     return;
   }
 
-  if (receivedtopic == subscribe_cmd)
+  if (receivedtopic == subscribe_topic)
   {
     if (root.containsKey("ac_cmd"))
     {
       ir_data.ac_mode = root["ac_cmd"];
-      ir_data.haveData = true;
     }
-  }
 
-  if (receivedtopic == subscribe_set)
-  {
     if (root.containsKey("ac_temp"))
     {
       ir_data.ac_temp = root["ac_temp"];
@@ -152,13 +149,25 @@ void ICACHE_RAM_ATTR parseMqttMsg(String receivedpayload, String receivedtopic)
       ir_data.ac_flow = root["ac_flow"];
     }
 
-    if (ir_data.ac_mode == 1)
+    if (ir_data.ac_mode != ir_data.prev_mode)
     {
-      ir_data.haveData = true;
+      ir_data.prev_mode = ir_data.ac_mode;
+      ir_data.haveData  = true;
     }
-    else
+
+    if (ir_data.ac_temp != ir_data.prev_temp || ir_data.ac_flow != ir_data.prev_flow)
     {
-      sendCheck();
+      ir_data.prev_temp = ir_data.ac_temp;
+      ir_data.prev_flow = ir_data.ac_flow;
+
+      if (ir_data.ac_mode == 1)
+      {
+        ir_data.haveData  = true;
+      }
+      else
+      {
+        sendCheck();
+      }
     }
   }
 }
@@ -268,8 +277,7 @@ void setup()
   Serial.begin(115200);
   Serial.println();
   Serial.println("Starting....... ");
-
-  startMills           = millis();
+  
   lastReconnectAttempt = 0;
   bDalasstarted        = false;
   bDalasison           = false;
@@ -277,6 +285,11 @@ void setup()
   ir_data.ac_mode     = 0;
   ir_data.ac_temp     = AC_DEFAULT_TEMP;
   ir_data.ac_flow     = AC_DEFAULT_FLOW;
+
+  ir_data.prev_mode   = 0;
+  ir_data.prev_temp   = AC_DEFAULT_TEMP;
+  ir_data.prev_flow   = AC_DEFAULT_FLOW;
+  
   ir_data.haveData    = false;
 
   lgWhisen.setActype(AC_CONF_TYPE);
@@ -328,6 +341,7 @@ void setup()
     }
   }
   reconnect();
+  startMills = millis();
 }
 
 void loop()
