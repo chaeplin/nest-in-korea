@@ -37,39 +37,32 @@ else:
 	sys.exit("Can't get access_token")
 
 # get device id
-path_devel = "/devices/thermostats?auth=" + d['access_token']
+path_devel = "/?auth=" + d['access_token']
 conn_devel = httplib.HTTPSConnection(devel_url)
 conn_devel.request("GET", path_devel)
 conn_devel_httpResponse = conn_devel.getresponse()
-#if conn_devel_httpResponse.reason != 'OK':
-#	sys.exit(conn_devel_httpResponse.reason)
 
 #firebase
 path_firebase = conn_devel_httpResponse.getheader('Location')
-match = re.search('https:\/\/(.*):(.*)\/(.*)\/(.*)$', path_firebase)
+match = re.search('https:\/\/(.*):(.*)\/(.*)$', path_firebase)
+
 if match:
-	firebase_url  = match.group(1)
-	firebase_port = match.group(2)
-	firbase_path1 = match.group(3)
-	firbase_path2 = match.group(4)
-        firbase_path = "/" + firbase_path1 + "/" + firbase_path2
+        firebase_url  = match.group(1)
+        firebase_port = match.group(2)
+        firbase_path  = match.group(3)
 else:
-	sys.exit("Can't get firebase url")
+        sys.exit("Can't get firebase url")
 
 firebase_devel = httplib.HTTPSConnection(firebase_url, firebase_port)
 firebase_devel.request("GET", firbase_path)
 firebase_devel_httpResponse = firebase_devel.getresponse()
 result_firebase = firebase_devel_httpResponse.read()
-device_id_match = re.search('{\"(.*)\":{\"humidity', result_firebase)
-if device_id_match:
-	print ("\r\n ---> device id is: %s") % device_id_match.group(1)
-	print ("\r\n");
-else:
-        sys.exit("Can't get deviceid")
-
-print "--------------------------------------------------------------")
 result = json.loads(result_firebase)
-print json.dumps(result, sort_keys=True, indent=4, separators=(',', ': '))
 
+if len(result["structures"]) == 1:
+    for key in result["structures"].keys():
+        print ("\r\n ---> structures id is: %s") % key
 
-# end
+if len(result["devices"]["thermostats"]) == 1:
+    for key in result["devices"]["thermostats"].keys():
+        print ("\r\n ---> device id is: %s") % key
