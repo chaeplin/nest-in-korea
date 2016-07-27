@@ -26,7 +26,7 @@
 ------------|----------
 ![image](./pics/01-ac24v.jpg) | ![image](./pics/02-backplate.jpg) 
 
- 24V IN | Cool off | Cool on
+ 24V IN | Cool off(0.8V with 5KR) | Cool on(24V with 5KR)
 --------|----------|---------
 ![image](./pics/03-24vacin.jpg) | ![image](./pics/04-cooloff.jpg) | ![image](./pics/05-coolon.jpg)
 
