@@ -34,6 +34,11 @@ esp8266 ir tx | nest
 ------------|----------
 ![image](./pics/06-irdriver.jpg) | ![image](./pics/07-nest.jpg)
 
+ bridge stand | back plate | bridge with HCLP-3700 and esp8266
+--------|----------|---------
+![image](./pics/08-stand.jpg) | ![image](./pics/09-backplate.jpg) | ![image](./pics/10-bridge.jpg)
+
+
 ### Slack Incoming WebHooks
 
 ## NEST API
