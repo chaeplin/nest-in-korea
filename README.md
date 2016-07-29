@@ -47,7 +47,7 @@ esp8266 ir tx | nest
 ![image](./pics/06-irdriver.jpg) | ![image](./pics/07-nest.jpg)
 
  bridge stand | back plate | bridge with hcpl-3700 and esp8266 | hcpl-3700
---------|----------|---------
+--------|----------|---------|---------
 ![image](./pics/08-stand.jpg) | ![image](./pics/09-backplate.jpg) | ![image](./pics/10-bridge.jpg) | ![image](./pics/11-hCPL-3700.png)
 
 
