@@ -48,7 +48,7 @@ esp8266 ir tx | nest
 
  bridge stand | back plate | bridge with hcpl-3700 and esp8266 | hcpl-3700
 --------|----------|---------|---------
-![image](./pics/08-stand.jpg) | ![image](./pics/09-backplate.jpg) | ![image](./pics/10-bridge.jpg) | ![image](./pics/11-hCPL-3700.png)
+![image](./pics/08-stand.jpg) | ![image](./pics/09-backplate.jpg) | ![image](./pics/10-bridge.jpg) | ![image](./pics/11-hcpl-3700.png)
 
 
 ### Slack Incoming WebHooks
