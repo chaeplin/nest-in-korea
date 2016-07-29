@@ -8,25 +8,30 @@ import json
 import paho.mqtt.publish as mqtt
 import socket
 import ssl
+import yaml
 
-structures_id  = "xxxxx"
-device_id      = "xxxxx"
-access_token   = "xxxxx"
+config = yaml.load(open('conf/nest.conf', 'r'))
+
+structures_id  = config.get('structures_id')
+device_id      = config.get('device_id')
+access_token   = config.get('access_token')
 child_path     = "/?auth=" + access_token
 
 # add server CN to host file
-mqtt_cn   = "xxxxx"
-mqtt_user = "xxxxx"
-mqtt_pass = "xxxxx"
+mqtt_ca        = config.get('mqtt_ca')
+mqtt_cn        = config.get('mqtt_cn')
+mqtt_user      = config.get('mqtt_user')
+mqtt_pass      = config.get('mqtt_pass')
+mqtt_clientid  = config.get('mqtt_clientid')
 
-topic_ac_set = "cool/LIVING_ROOM/set"
-first        = True
+topic_ac_set   = config.get('topic_ac_set')
+first          = True
 
 def publish(y):
     print y
     auth_user = {'username':mqtt_user, 'password':mqtt_pass}
-    tls_user  = {'ca_certs':"ca.crt", 'tls_version':ssl.PROTOCOL_TLSv1}
-    mqtt.single(topic_ac_set, y, 0, 1, hostname=mqtt_cn, port=8883, client_id="nestrpi2", auth=auth_user, tls=tls_user)
+    tls_user  = {'ca_certs':mqtt_ca, 'tls_version':ssl.PROTOCOL_TLSv1}
+    mqtt.single(topic_ac_set, y, 0, 1, hostname=mqtt_cn, port=8883, client_id=mqtt_clientid, auth=auth_user, tls=tls_user)
 
 def p(x):
 
