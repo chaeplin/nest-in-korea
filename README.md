@@ -20,6 +20,18 @@
 * WIFI : WPA2 personal
 * 24V AC 아답터
 
+### nest wiring
+```
+The 2nd and 3rd generation Nest Learning Thermostats can control the following types of HVAC systems:
+Heating: one, two and three stages (W1, W2, W3)
+Cooling: one and two stages (Y1, Y2)
+Heat pump: with auxiliary and emergency heat (O/B, AUX, E)
+Fan (G)
+Power (C, Rh, Rc)
+Humidifier or dehumidifier (HUM, DEHUM)
+The Nest Thermostat's connector can accept only one of these wires: W3, E, HUM or DEHUM.
+The Nest Learning Thermostat is designed to work even if your home doesn’t have a common “C” wire, but installing a new C wire may be required in rare cases.
+```
 
 ### 케이블연결
 24V AC 아답터 | 백플레이트 
@@ -34,9 +46,9 @@ esp8266 ir tx | nest
 ------------|----------
 ![image](./pics/06-irdriver.jpg) | ![image](./pics/07-nest.jpg)
 
- bridge stand | back plate | bridge with HCLP-3700 and esp8266
+ bridge stand | back plate | bridge with hcpl-3700 and esp8266 | hcpl-3700
 --------|----------|---------
-![image](./pics/08-stand.jpg) | ![image](./pics/09-backplate.jpg) | ![image](./pics/10-bridge.jpg)
+![image](./pics/08-stand.jpg) | ![image](./pics/09-backplate.jpg) | ![image](./pics/10-bridge.jpg) | ![image](./pics/11-hCPL-3700.png)
 
 
 ### Slack Incoming WebHooks
