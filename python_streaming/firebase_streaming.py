@@ -47,7 +47,7 @@ class RemoteThread(threading.Thread):
 
     def run(self):
         try:
-            self.sse = ClosableSSEClient(self.URL)
+            self.sse = ClosableSSEClient(self.URL, timeout=60)            
             for msg in self.sse:
                 msg_test = json.loads(msg.data)
                 if msg_test is None:    # keep-alives
