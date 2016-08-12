@@ -1,5 +1,5 @@
 #!/usr/bin/env python2
-# encoding: utf-8
+# -*- coding: utf-8 -*-
 
 from firebase_streaming import Firebase
 import json
@@ -11,12 +11,12 @@ import time
 import paho.mqtt.client as mqtt
 import ssl
 
-
 def on_connect(client, userdata, flags, rc):
     print ("Connected with result code "+str(rc))
     client.subscribe(mqtt_subscribe + "setAway", 0)
     client.subscribe(mqtt_subscribe + "setTargetTemperature", 0)
     client.subscribe(mqtt_subscribe + "setTargetHeatingCoolingState", 0)
+    client.subscribe(mqtt_subscribe + "setFanSpeed", 0)
 
 def on_message(client, userdata, msg):
     global first_setAway
@@ -42,15 +42,20 @@ def on_message(client, userdata, msg):
         if (first_setTargetTemperature == False):
             if ((now - ts) > 60):
                 thermostat_set.put({"target_temperature_c": float(msg.payload)})
+                payload = "{\"ac_temp\":" + str(msg.payload) + "}"
+                client.publish(mqtt_esp8266, payload, 0, 1)
                 ts = time.time()
         first_setTargetTemperature = False
+    elif (msg.topic == mqtt_subscribe + "setFanSpeed"):
+        payload = "{\"ac_flow\":" + str(msg.payload) + "}"
+        client.publish(mqtt_esp8266, payload, 0, 1) 
     else:
         print("should not")
 
     if ((now - ts) <= 60):
         if (first == False):
             print (now - ts)
-            payload = "{\"Away\":" + away_state + ",\"TargetHeatingCoolingState\":" + hvac_target + ",\"CurrentTemperature\":" + str(ambient_temperature_c) + ",\"CurrentRelativeHumidity\":" + str(humidity) + ",\"TargetTemperature\":" + str(target_temperature_c) + "}"
+            payload = "{\"Away\":" + away_state + ",\"TargetHeatingCoolingState\":" + hvac_target + ",\"CurrentTemperature\":" + str(ambient_temperature_c) + ",\"CurrentRelativeHumidity\":" + str(humidity) + ",\"TargetTemperature\":" + str(target_temperature_c) + ",\"CurrentHeatingCoolingState\":" + CurrentHeatingCoolingState + "}"
             client.publish(mqtt_publish, payload, 0, 1)
 
 def p(x):
@@ -59,6 +64,7 @@ def p(x):
     global ambient_temperature_c
     global humidity 
     global target_temperature_c
+    global CurrentHeatingCoolingState
     global first
 
     result = json.loads(x[1])
@@ -78,7 +84,7 @@ def p(x):
         humidity              = result['data']['devices']['thermostats'][device_id]['humidity']
         ambient_temperature_c = result['data']['devices']['thermostats'][device_id]['ambient_temperature_c']
         hvac_mode             = result['data']['devices']['thermostats'][device_id]['hvac_mode']       
-
+        hvac_state            = result['data']['devices']['thermostats'][device_id]['hvac_state']
 
         if away == 'home':
             away_state = '0'
@@ -100,14 +106,23 @@ def p(x):
         else:
             print("should not")
 
-        payload = "{\"Away\":" + away_state + ",\"TargetHeatingCoolingState\":" + hvac_target + ",\"CurrentTemperature\":" + str(ambient_temperature_c) + ",\"CurrentRelativeHumidity\":" + str(humidity) + ",\"TargetTemperature\":" + str(target_temperature_c) + "}"
+        if hvac_state == 'off':
+            CurrentHeatingCoolingState = '0'
+        elif hvac_state== 'heating':
+            CurrentHeatingCoolingState = '1'
+        elif hvac_state == 'cooling':
+            CurrentHeatingCoolingState = '2'
+        else:
+            print("should not")
+
+        payload = "{\"Away\":" + away_state + ",\"TargetHeatingCoolingState\":" + hvac_target + ",\"CurrentTemperature\":" + str(ambient_temperature_c) + ",\"CurrentRelativeHumidity\":" + str(humidity) + ",\"TargetTemperature\":" + str(target_temperature_c) + ",\"CurrentHeatingCoolingState\":" + CurrentHeatingCoolingState + "}"
         client.publish(mqtt_publish, payload, 0, 1)
         
         if ( first == True):
             first = False
 
 #---------
-config = yaml.load(open('conf/nest.conf', 'r'))
+config = yaml.load(open('./conf/nest.conf', 'r'))
 
 structure_id   = config.get('structure_id')
 device_id      = config.get('device_id')
@@ -125,6 +140,7 @@ mqtt_pass      = config.get('mqtt_pass')
 mqtt_clientid  = config.get('mqtt_clientid')
 mqtt_subscribe = config.get('mqtt_subscribe')
 mqtt_publish   = config.get('mqtt_publish')
+mqtt_esp8266   = config.get('mqtt_esp8266')
 
 dict_Away = {
     '0': {"away": "home"},
@@ -139,7 +155,6 @@ dict_Hvac_mode = {
     '2': {"hvac_mode": "cool"},
     '3': {"hvac_mode": "heat-cool"}
 }
-
 
 first = True
 first_setAway  = True
