@@ -23,6 +23,7 @@ def on_message(client, userdata, msg):
     global first_setTargetHeatingCoolingState
     global first_setTargetTemperature
     global ts
+    global FanSpeed
 
     print (msg.topic+" "+str(msg.payload))
     now = time.time()
@@ -48,15 +49,15 @@ def on_message(client, userdata, msg):
         first_setTargetTemperature = False
     elif (msg.topic == mqtt_subscribe + "setFanSpeed"):
         payload = "{\"ac_flow\":" + str(msg.payload) + "}"
-        client.publish(mqtt_esp8266, payload, 0, 1) 
+        client.publish(mqtt_esp8266, payload, 0, 1)
+        FanSpeed = str(msg.payload)
     else:
         print("should not")
-
-    if ((now - ts) <= 60):
-        if (first == False):
-            print (now - ts)
-            payload = "{\"Away\":" + away_state + ",\"TargetHeatingCoolingState\":" + hvac_target + ",\"CurrentTemperature\":" + str(ambient_temperature_c) + ",\"CurrentRelativeHumidity\":" + str(humidity) + ",\"TargetTemperature\":" + str(target_temperature_c) + ",\"CurrentHeatingCoolingState\":" + CurrentHeatingCoolingState + "}"
-            client.publish(mqtt_publish, payload, 0, 1)
+    
+    if (first == False):
+        payload = "{\"Away\":" + away_state + ",\"TargetHeatingCoolingState\":" + hvac_target + ",\"CurrentTemperature\":" + str(ambient_temperature_c) + ",\"CurrentRelativeHumidity\":" + str(humidity) + ",\"TargetTemperature\":" + str(target_temperature_c) + ",\"CurrentHeatingCoolingState\":" + CurrentHeatingCoolingState + ",\"CurrentFanSpeed\":" + str(FanSpeed) + "}"
+        client.publish(mqtt_publish, payload, 0, 1)
+        print (payload)
 
 def p(x):
     global away_state
@@ -115,10 +116,11 @@ def p(x):
         else:
             print("should not")
 
-        payload = "{\"Away\":" + away_state + ",\"TargetHeatingCoolingState\":" + hvac_target + ",\"CurrentTemperature\":" + str(ambient_temperature_c) + ",\"CurrentRelativeHumidity\":" + str(humidity) + ",\"TargetTemperature\":" + str(target_temperature_c) + ",\"CurrentHeatingCoolingState\":" + CurrentHeatingCoolingState + "}"
+        payload = "{\"Away\":" + away_state + ",\"TargetHeatingCoolingState\":" + hvac_target + ",\"CurrentTemperature\":" + str(ambient_temperature_c) + ",\"CurrentRelativeHumidity\":" + str(humidity) + ",\"TargetTemperature\":" + str(target_temperature_c) + ",\"CurrentHeatingCoolingState\":" + CurrentHeatingCoolingState + ",\"CurrentFanSpeed\":" + str(FanSpeed) + "}"
         client.publish(mqtt_publish, payload, 0, 1)
+        print (payload)
         
-        if ( first == True):
+        if (first == True):
             first = False
 
 #---------
@@ -161,6 +163,7 @@ first_setAway  = True
 first_setTargetHeatingCoolingState = True
 first_setTargetTemperature = True
 ts = time.time()
+FanSpeed = 0
 
 client = mqtt.Client(client_id=mqtt_clientid)
 client.on_connect = on_connect
@@ -184,3 +187,4 @@ try:
 except KeyboardInterrupt:
     custom_callback.stop()
     sys.exit(1)
+
