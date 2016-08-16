@@ -68,6 +68,8 @@ def p(x):
     global CurrentHeatingCoolingState
     global first
 
+    global target_temperature_c_prev
+
     result = json.loads(x[1])
 
     if len(result['data']) == 3:
@@ -119,6 +121,12 @@ def p(x):
         payload = "{\"Away\":" + away_state + ",\"TargetHeatingCoolingState\":" + hvac_target + ",\"CurrentTemperature\":" + str(ambient_temperature_c) + ",\"CurrentRelativeHumidity\":" + str(humidity) + ",\"TargetTemperature\":" + str(target_temperature_c) + ",\"CurrentHeatingCoolingState\":" + CurrentHeatingCoolingState + ",\"CurrentFanSpeed\":" + str(FanSpeed) + "}"
         client.publish(mqtt_publish, payload, 0, 1)
         print (payload)
+
+
+        if (target_temperature_c_prev != target_temperature_c):
+            payload = "{\"ac_temp\":" + str(target_temperature_c) + "}"
+            client.publish(mqtt_esp8266, payload, 0, 1)
+            target_temperature_c_prev = target_temperature_c
         
         if (first == True):
             first = False
@@ -165,6 +173,8 @@ first_setTargetTemperature = True
 ts = time.time()
 FanSpeed = 0
 
+target_temperature_c_prev = 0
+
 client = mqtt.Client(client_id=mqtt_clientid)
 client.on_connect = on_connect
 client.on_message = on_message
@@ -188,3 +198,4 @@ except KeyboardInterrupt:
     custom_callback.stop()
     sys.exit(1)
 
+c
