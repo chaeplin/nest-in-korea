@@ -27,6 +27,11 @@ cd /etc/mosquitto/certs
 chown mosquitto.mosquitto ca.crt server.crt server.key
 ```
 
+```
+./easyrsa sign-req client client1
+./easyrsa sign-req client client1
+```
+
 ### get SHA1 Fingerprint of server crt
 ```
 openssl x509 -fingerprint -in server.crt | sed -e 's/:/ /g'
