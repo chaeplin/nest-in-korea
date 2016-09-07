@@ -28,9 +28,18 @@ chown mosquitto.mosquitto ca.crt server.crt server.key
 ```
 
 ```
-./easyrsa sign-req client client1
-./easyrsa sign-req client client1
+./easyrsa gen-req client nopass
+./easyrsa sign-req client client
 ```
+
+extra for openvpn
+```
+./easyrsa gen-dh
+./easyrsa export-p12 client
+openvpn --genkey --secret ta.key
+
+```
+
 
 ### get SHA1 Fingerprint of server crt
 ```
