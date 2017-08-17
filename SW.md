@@ -19,8 +19,8 @@ git clone https://github.com/OpenVPN/easy-rsa.git
 cd easy-rsa/easyrsa3
 ./easyrsa init-pki
 ./easyrsa build-ca
-./easyrsa gen-req server nopass
-./easyrsa sign-req server server
+./easyrsa gen-req server_name nopass
+./easyrsa sign-req server server_name
 mkdir -p /etc/mosquitto/certs
 cp pki/ca.crt pki/private/server.key pki/issued/server.crt  /etc/mosquitto/certs/
 cd /etc/mosquitto/certs
@@ -28,9 +28,10 @@ chown mosquitto.mosquitto ca.crt server.crt server.key
 ```
 
 ```
-./easyrsa gen-req client nopass
-./easyrsa sign-req client client
+./easyrsa gen-req client_name nopass
+./easyrsa sign-req client client_name
 ```
+
 
 extra for openvpn
 ```
